@@ -53,6 +53,7 @@ module Quickbooks
       xml_accessor :custom_fields, :from => "CustomField", as: [CustomField]
       xml_accessor :print_grouped_items?, :from => 'PrintGroupedItems'
       xml_accessor :item_group_details, :from => 'ItemGroupDetail', :as => ItemGroupDetail
+      xml_accessor :txn_source, :from => 'TxnSource'
 
       reference_setters :parent_ref, :income_account_ref, :expense_account_ref
       reference_setters :asset_account_ref, :sales_tax_code_ref, :purchase_tax_code_ref
