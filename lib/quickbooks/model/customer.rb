@@ -56,6 +56,7 @@ module Quickbooks
       xml_accessor :tax_exemption_reason_id, :from => 'TaxExemptionReasonId'
       xml_accessor :primary_tax_identifier, :from => 'PrimaryTaxIdentifier'
       xml_accessor :customer_type_ref, :from => 'CustomerTypeRef', :as => BaseReference
+      xml_accessor :txn_source, :from => 'TxnSource'
 
       #== Validations
       validate :names_cannot_contain_invalid_characters
