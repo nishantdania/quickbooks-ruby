@@ -25,7 +25,7 @@ module Quickbooks
         end
 
         def code
-          @real_response.status.to_i
+          @real_response.code.to_i
         end
 
         def headers

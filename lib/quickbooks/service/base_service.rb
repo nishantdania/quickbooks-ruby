@@ -18,7 +18,9 @@ module Quickbooks
       HTTP_ACCEPT = 'application/xml'
       HTTP_ACCEPT_ENCODING = 'gzip, deflate'
       BASE_DOMAIN = 'quickbooks.api.intuit.com'
-      SANDBOX_DOMAIN = 'sandbox-quickbooks.api.intuit.com'
+      SANDBOX_DOMAIN = ''
+      COMPANY_ID_LOCAL= ''
+      AUTH_HEADER = ''
 
       RequestInfo = Struct.new(:url, :headers, :body, :method)
 
@@ -34,12 +36,14 @@ module Quickbooks
       end
 
       def company_id=(company_id)
-        @company_id = company_id
+        # @company_id = company_id
+        @company_id = COMPANY_ID_LOCAL
       end
 
       # realm & company are synonymous
       def realm_id=(company_id)
-        @company_id = company_id
+        # @company_id = company_id
+        @company_id = COMPANY_ID_LOCAL
       end
 
       # def oauth_v2?
@@ -283,11 +287,25 @@ module Quickbooks
       end
 
       def oauth_get(url, headers)
-        @oauth.get(url, headers: headers, raise_errors: false)
+        # @oauth.get(url, headers: headers, raise_errors: false)
+        uri = URI(url)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        request = Net::HTTP::Get.new(uri.request_uri)
+        request["Authorization"] = AUTH_HEADER
+        http.request(request)
       end
 
       def oauth_post(url, body, headers)
-        @oauth.post(url, headers: headers, body: body, raise_errors: false)
+        # @oauth.post(url, headers: headers, body: body, raise_errors: false)
+        uri = URI(url)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.body = body
+        request["Authorization"] = AUTH_HEADER
+        request["Content-Type"] = "application/xml" 
+        http.request(request)
       end
 
       def oauth_post_with_multipart(url, body, headers)
