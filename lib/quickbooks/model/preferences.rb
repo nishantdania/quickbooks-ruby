@@ -6,11 +6,13 @@ module Quickbooks
       REST_RESOURCE       = 'preferences'
 
       xml_name XML_NODE
+      xml_accessor :id, :from => 'Id'
+      xml_accessor :sync_token, :from => 'SyncToken', :as => Integer
 
       def self.create_preference_class(*attrs, &block)
         ::Class.new(BaseModel) do
           attrs.each do |a|
-            xml_reader(a.underscore, :from => a.gsub("?", ""))
+            xml_accessor(a.underscore, :from => a.gsub("?", ""))
           end
           instance_eval(&block) if block_given?
         end
@@ -26,7 +28,7 @@ module Quickbooks
         :report               => %w(ReportBasis)
       }
 
-      xml_reader :sales_forms, :from => "SalesFormsPrefs", :as => create_preference_class(*%w(
+      xml_accessor :sales_forms, :from => "SalesFormsPrefs", :as => create_preference_class(*%w(
         AllowDeposit?
         AllowDiscount?
         AllowEstimates?
@@ -50,23 +52,34 @@ module Quickbooks
         UsingPriceLevels?
         UsingProgressInvoicing?
       )) {
-        xml_reader :custom_fields, :as => [CustomField], :from => 'CustomField', in: 'CustomField'
+        xml_name "SalesFormsPrefs"
+        # xml_reader :custom_fields, :as => [CustomField], :from => 'CustomField', in: 'CustomField'
       }
 
       PREFERENCE_SECTIONS.each do |section_name, fields|
-        xml_reader section_name, :from => "#{section_name}_prefs".camelize, :as => create_preference_class(*fields)
+        xml_accessor section_name, :from => "#{section_name}_prefs".camelize, :as => create_preference_class(*fields) { xml_name "#{section_name}_prefs" }
       end
 
-      EmailMessage          = create_preference_class("Subject", "Message")
+      EmailMessage          = create_preference_class("Subject", "Message") { xml_name "EmailMessage" }
       EmailMessageContainer = create_preference_class do
+        xml_name "EmailMessageContainer"
         %w(InvoiceMessage EstimateMessage SalesReceiptMessage StatementMessage).each do |msg|
-          xml_reader msg.underscore, :from => msg, :as => EmailMessage
+          xml_accessor msg.underscore, :from => msg, :as => EmailMessage
         end
       end
 
-      xml_reader :email_messages, :from => "EmailMessagesPrefs", as: EmailMessageContainer
+      xml_accessor :email_messages, :from => "EmailMessagesPrefs", as: EmailMessageContainer
 
-      xml_reader :other_prefs, :from => "OtherPrefs/NameValue", :as => { :key => "Name", :value => "Value" }
+      # xml_accessor :other_prefs, :from => "OtherPrefs/NameValue", :as => { :key => "Name", :value => "Value" }
+      
+      OtherPrefs = create_preference_class do
+        xml_name "OtherPrefs"
+
+        # xml_accessor :name_values, :from => 'NameValue', :as => [NameValue]
+        xml_accessor :name_values, :from => 'NameValue', :as => { :key => "Name", :value => "Value" }
+      end
+
+      xml_accessor :other_prefs, :from => "OtherPrefs", :as => OtherPrefs
     end
 
   end

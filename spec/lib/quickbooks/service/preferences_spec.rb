@@ -15,4 +15,16 @@ describe "Quickbooks::Service::Preferences" do
     expect(preferences.accounting_info.customer_terminology).to eq("Customers")
   end
 
+  it "can fully update preferences" do
+    xml = fixture("preferences_query.xml")
+    pref_xml = fixture("preferences.xml")
+    preferences = Quickbooks::Model::Preferences.from_xml(pref_xml)
+    model = Quickbooks::Model::Preferences
+
+    # stub_http_request(:post, @service.url_for_resource(preferences::REST_RESOURCE), ["200", "OK"], xml)
+    binding.pry
+    preferences_update = @service.update(preferences, :sparse => false)
+    binding.pry
+  end
+
 end

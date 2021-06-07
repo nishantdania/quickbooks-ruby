@@ -17,7 +17,15 @@ describe "Quickbooks::Model::Preferences" do
     expect(preferences.sales_forms.custom_fields).not_to be_empty
     expect(preferences.sales_forms.custom_fields[0].name).to eq("SalesFormsPrefs.UseSalesCustom1")
     expect(preferences.sales_forms.custom_fields[3].name).to eq("SalesFormsPrefs.SalesCustomName1")
+    expect(preferences.sales_forms.allow_shipping?).to be true
 
     expect(preferences.other_prefs["SalesFormsPrefs.DefaultItem"]).to eq("1")
+  end
+
+  it "should set value" do
+    xml = fixture("preferences.xml")
+    preferences = Quickbooks::Model::Preferences.from_xml(xml)
+    preferences.sales_forms.allow_shipping = false
+    expect(preferences.sales_forms.allow_shipping?).to be false
   end
 end

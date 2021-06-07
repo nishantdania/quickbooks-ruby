@@ -56,7 +56,7 @@
     <ETransactionPaymentEnabled>false</ETransactionPaymentEnabled>
     <IPNSupportEnabled>false</IPNSupportEnabled>
     <AllowServiceDate>false</AllowServiceDate>
-    <AllowShipping>false</AllowShipping>
+    <AllowShipping>true</AllowShipping>
     <AutoApplyCredit>true</AutoApplyCredit>
     <AutoApplyPayments>true</AutoApplyPayments>
     <UsingPriceLevels>false</UsingPriceLevels>
